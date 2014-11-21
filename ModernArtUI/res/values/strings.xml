@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">ModernArtUI</string>
     <string name="title_activity_modern_art">ModernArtActivity</string>
     <string name="hello_world">Hello world!</string>
-
+    <string name="more_info">Want to know more?</string>
+    <string name="visit_moma">Visit MOMA?</string>
+    <string name="cancel">Not now</string>
+    <string name="message">Inspired by the art of Henri Matisse. Click below to learn more!</string>
 </resources>

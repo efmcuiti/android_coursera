@@ -1,12 +1,84 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="${relativePackage}.${activityClass}" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
-
-</RelativeLayout>
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2">
+        <TextView
+            android:id="@+id/red_box"
+        	android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+        	android:background="@drawable/back_red"
+        	android:text="" />
+    </LinearLayout>
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.8"
+        android:orientation="horizontal" android:baselineAligned="false">
+        <LinearLayout 
+            android:layout_width="0dp" 
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:orientation="vertical">
+	    	<TextView 
+	    	    android:id="@+id/green_box"
+	        	android:layout_width="match_parent"
+	        	android:layout_height="0dp"
+	        	android:layout_weight="0.85"
+	        	android:background="@drawable/back_green"
+	        	android:text="" />
+	    	<TextView
+	    	    android:id="@+id/blue_box"
+	        	android:layout_width="match_parent"
+	        	android:layout_height="0dp"
+	        	android:layout_weight="0.15"
+	        	android:background="@drawable/back_blue"
+	        	android:text="" />
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="0dp" 
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:orientation="vertical">
+	    	<TextView 
+	    	    android:id="@+id/yellow_box"
+	        	android:layout_width="match_parent"
+	        	android:layout_height="match_parent"
+	        	android:background="@drawable/back_yellow"
+	        	android:text="" />
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="0dp" 
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
+            android:orientation="vertical">
+	    	<TextView 
+	    	    android:id="@+id/gray_box"
+	        	android:layout_width="match_parent"
+	        	android:layout_height="0dp"
+	        	android:layout_weight="0.4"
+	        	android:background="@drawable/back_gray"
+	        	android:text="" />
+	    	<TextView
+	    	    android:id="@+id/pink_box"
+	        	android:layout_width="match_parent"
+	        	android:layout_height="0dp"
+	        	android:layout_weight="0.6"
+	        	android:background="@drawable/back_pink"
+	        	android:text="" />
+        </LinearLayout>
+    </LinearLayout>
+	<SeekBar 
+	    android:id="@+id/color_changer"
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content"
+		android:background="#000000"
+		android:max="100"
+		android:progress="0" />
+</LinearLayout>
