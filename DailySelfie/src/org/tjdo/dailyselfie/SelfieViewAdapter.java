@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 
 /**
  * Defines a class to manage the view for adding new selfies.
@@ -38,6 +39,18 @@ public class SelfieViewAdapter extends CursorAdapter {
 	private String mSelfiesStoragePath;
 	
 	/**
+	 * Used to manage the rows inside the list view.
+	 * @author efmcuiti
+	 *
+	 */
+	static class ViewHolder {
+		/** Holds a thumb to be displayed on the list view. */
+		ImageView thumbnail;
+		/** Text to show at the side of the thumb. */
+		String selfieName;
+	}
+	
+	/**
 	 * Default constructor for the class.
 	 * @param context Application context to work with.
 	 * @param c Cursor to work with (have all records from database).
@@ -48,6 +61,8 @@ public class SelfieViewAdapter extends CursorAdapter {
 		// Initialize the local variables.
 		this.mContext = context;
 		sLayoutInflater = LayoutInflater.from(mContext);
+		
+		// TODO add the new logic for media validation.
 	}
 
 	/* (non-Javadoc)
@@ -68,4 +83,26 @@ public class SelfieViewAdapter extends CursorAdapter {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.widget.CursorAdapter#swapCursor(android.database.Cursor)
+	 */
+	@Override
+	public Cursor swapCursor(Cursor newCursor) {
+		// 1. Clear all previous content.
+		if (null != newCursor) {
+			mSelfies.clear();
+			if (newCursor.moveToFirst()) {
+				// TODO add the new elements to the view.
+			}
+		}
+		return super.swapCursor(newCursor);
+	}
+	
+	/**
+	 * Adds a new row view containing a picture.
+	 * @param selfie New element to be added to the list.
+	 */
+	public void add(SelfieRecord selfie) {
+		// TODO add the add new logic.
+	}
 }
