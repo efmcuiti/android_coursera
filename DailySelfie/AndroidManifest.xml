@@ -5,8 +5,8 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="19" />
+        android:minSdkVersion="16"
+        android:targetSdkVersion="21" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -16,6 +16,7 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
     <uses-permission android:name="org.tjdo.dailyselfie.provider.SELFIE_PERM" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <permission android:name="org.tjdo.dailyselfie.provider.SELFIE_PERM" >
     </permission>
@@ -51,6 +52,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.tjdo.dailyselfie.DailySelfieActivity" />
         </activity>
+        
+        <receiver android:name=".DailySelfieReceiver" />
     </application>
 
 </manifest>

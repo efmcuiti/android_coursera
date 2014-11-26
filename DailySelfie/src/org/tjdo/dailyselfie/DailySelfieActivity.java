@@ -14,8 +14,11 @@ import java.util.Locale;
 
 import org.tjdo.dailyselfie.provider.DailySelfieContract;
 
+import android.app.AlarmManager;
 import android.app.ListActivity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -23,13 +26,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 
@@ -47,6 +51,9 @@ public class DailySelfieActivity extends ListActivity implements LoaderCallbacks
 	/** Used to notify the ExpandImage what image shall be shown. */
 	public static final String SELFIE_FULL_PATH = "selfieFullPath";
 	
+	/** Amount of milliseconds to wait for a new notification issue. */
+	public static final long INITIAL_ALARM_DELAY = 2 * 60 * 1000l;
+	
 	/** Used to identify messages on logs. */
 	private static final String TAG = "TJDO-DailySelfie";
 	
@@ -58,6 +65,15 @@ public class DailySelfieActivity extends ListActivity implements LoaderCallbacks
 	
 	/** Who will manage the list view so far. */
 	private SelfieViewAdapter mAdapter;
+	
+	/** Activity to be launched when the alarm is set. */
+	private Intent mNotification;
+	
+	/** Android will manage this. */
+	private PendingIntent mNotificationPI;
+	
+	/** In charge for issuing new alarms. */
+	private AlarmManager mAlarmManager;
 
     /* (non-Javadoc)
      * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -99,6 +115,18 @@ public class DailySelfieActivity extends ListActivity implements LoaderCallbacks
         
         // 3. Starting the cursor loader.
         getLoaderManager().initLoader(0, null, this);
+        
+        // 4. Setting up the custom alarm.
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        mNotification = new Intent(DailySelfieActivity.this, DailySelfieReceiver.class);
+        mNotificationPI = PendingIntent.getBroadcast(
+        		DailySelfieActivity.this, 0, mNotification, 0);
+        // 4.1. Setting the inexact repeating alarm.
+        mAlarmManager.setInexactRepeating(
+        		AlarmManager.ELAPSED_REALTIME, 
+        		SystemClock.elapsedRealtime() + INITIAL_ALARM_DELAY, 
+        		INITIAL_ALARM_DELAY, 
+        		mNotificationPI);
     }
 
 

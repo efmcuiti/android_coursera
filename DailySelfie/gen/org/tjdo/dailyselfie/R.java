@@ -26,9 +26,7 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int action_alarm=0x7f080004;
         public static final int action_camera=0x7f080003;
-        public static final int action_settings=0x7f080005;
         public static final int fullSizeSelfie=0x7f080000;
         public static final int selfieName=0x7f080002;
         public static final int thumbnail=0x7f080001;
@@ -48,7 +46,6 @@ public final class R {
         public static final int action_settings=0x7f050002;
         public static final int app_name=0x7f050000;
         public static final int empty_list=0x7f050001;
-        public static final int hello_world=0x7f050009;
         public static final int selfie_desc=0x7f050004;
         public static final int selfie_name=0x7f050005;
         public static final int thumb_desc=0x7f050003;

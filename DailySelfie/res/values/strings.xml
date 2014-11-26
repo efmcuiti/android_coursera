@@ -9,7 +9,6 @@
     <string name="selfie_name">Selfie</string>
     <string name="action_camera">Take!</string>
     <string name="action_alarm">Set!</string>
-    <string name="title_activity_expand_image">ExpandImageActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_expand_image">Daily Selfie</string>
 
 </resources>
