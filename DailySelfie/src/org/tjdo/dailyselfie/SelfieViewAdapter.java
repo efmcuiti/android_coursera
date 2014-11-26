@@ -31,10 +31,10 @@ import android.widget.TextView;
 public class SelfieViewAdapter extends CursorAdapter {
 	
 	/** The height for a thumb to be used in the list. */
-	private static final int THUMB_HEIGHT = 120;
+	private static final int THUMB_HEIGHT = 160;
 	
 	/** The width for a thumb to be used in the list. */
-	private static final int THUMB_WIDTH = 160;
+	private static final int THUMB_WIDTH = 120;
 	
 	/** Set of all taken daily photos. */
 	private ArrayList<SelfieRecord> mSelfies = new ArrayList<SelfieRecord>();
@@ -183,5 +183,14 @@ public class SelfieViewAdapter extends CursorAdapter {
 								DailySelfieContract.SELFIE_NAME)));
 		
 		return selfie;
+	}
+	
+	/**
+	 * Returns the selfie at a given position.
+	 * @param position Where is the selfie located.
+	 * @return If any pic at all.
+	 */
+	public SelfieRecord getSelfieAt(int position) {
+		return mSelfies.get(position);
 	}
 }

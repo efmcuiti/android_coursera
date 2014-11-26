@@ -27,6 +27,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 
@@ -40,6 +43,9 @@ public class DailySelfieActivity extends ListActivity implements LoaderCallbacks
 	
 	/** Defines the parameter to be passed to the camera application. */
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
+	
+	/** Used to notify the ExpandImage what image shall be shown. */
+	public static final String SELFIE_FULL_PATH = "selfieFullPath";
 	
 	/** Used to identify messages on logs. */
 	private static final String TAG = "TJDO-DailySelfie";
@@ -74,6 +80,22 @@ public class DailySelfieActivity extends ListActivity implements LoaderCallbacks
         // 2. Adding the adapter for the visual rows.
         mAdapter = new SelfieViewAdapter(getApplicationContext(), null, 0);
         setListAdapter(mAdapter);
+        
+        // 2.1. Every time an intem in the list is clicked, a new intent 
+        // shall be launched to show the image at full size.
+        getListView().setOnItemClickListener(new OnItemClickListener() {
+        	/* (non-Javadoc)
+        	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+        	 */
+        	@Override
+        	public void onItemClick(AdapterView<?> parent, View view,
+        			int position, long id) {
+        		Intent i = new Intent(DailySelfieActivity.this, ExpandImageActivity.class);
+        		// 1. Setting the picture to be taken.
+        		i.putExtra(SELFIE_FULL_PATH, mAdapter.getSelfieAt(position).getSelfieBitmapPath());
+        		startActivity(i);
+        	}
+		});
         
         // 3. Starting the cursor loader.
         getLoaderManager().initLoader(0, null, this);

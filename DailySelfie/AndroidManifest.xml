@@ -8,15 +8,18 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
-    <uses-feature 
+    <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
     <uses-permission android:name="org.tjdo.dailyselfie.provider.SELFIE_PERM" />
-    <permission android:name="org.tjdo.dailyselfie.provider.SELFIE_PERM"></permission>
-    
+
+    <permission android:name="org.tjdo.dailyselfie.provider.SELFIE_PERM" >
+    </permission>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -31,12 +34,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <provider 
-            android:name="org.tjdo.dailyselfie.provider.DailySelfieContentProvider"
+
+        <provider
+            android:name=".provider.DailySelfieContentProvider"
             android:authorities="org.tjdo.dailyselfie.provider"
             android:enabled="true"
             android:exported="true"
             android:permission="org.tjdo.dailyselfie.provider.SELFIE_PERM" >
         </provider>
+
+        <activity
+            android:name=".ExpandImageActivity"
+            android:label="@string/title_activity_expand_image"
+            android:parentActivityName=".DailySelfieActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.tjdo.dailyselfie.DailySelfieActivity" />
+        </activity>
     </application>
+
 </manifest>

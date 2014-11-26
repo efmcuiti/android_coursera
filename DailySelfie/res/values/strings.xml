@@ -4,8 +4,12 @@
     <string name="app_name">The just DO! Daily Selfie</string>
     <string name="empty_list">Nothing taken yet!</string>
     <string name="action_settings">Settings</string>
-	<string name="thumb_desc">Thumbnail</string>
-	<string name="selfie_name">Selfie</string>
-	<string name="action_camera">Take!</string>
-	<string name="action_alarm">Set!</string>
+    <string name="thumb_desc">Thumbnail</string>
+    <string name="selfie_desc">Selfie</string>
+    <string name="selfie_name">Selfie</string>
+    <string name="action_camera">Take!</string>
+    <string name="action_alarm">Set!</string>
+    <string name="title_activity_expand_image">ExpandImageActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>
