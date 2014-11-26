@@ -8,13 +8,20 @@ package org.tjdo.dailyselfie;
 
 import java.util.ArrayList;
 
+import org.tjdo.dailyselfie.provider.DailySelfieContract;
+
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * Defines a class to manage the view for adding new selfies.
@@ -22,9 +29,12 @@ import android.widget.ImageView;
  *
  */
 public class SelfieViewAdapter extends CursorAdapter {
-
-	/** Where inside the application to save the photos. */
-	private static final String APP_DIR = "TJDODailySelfies/Selfies";
+	
+	/** The height for a thumb to be used in the list. */
+	private static final int THUMB_HEIGHT = 120;
+	
+	/** The width for a thumb to be used in the list. */
+	private static final int THUMB_WIDTH = 160;
 	
 	/** Set of all taken daily photos. */
 	private ArrayList<SelfieRecord> mSelfies = new ArrayList<SelfieRecord>();
@@ -35,9 +45,6 @@ public class SelfieViewAdapter extends CursorAdapter {
 	/** Application environment. */
 	private Context mContext;
 	
-	/** Where will be all the photos being saved. */
-	private String mSelfiesStoragePath;
-	
 	/**
 	 * Used to manage the rows inside the list view.
 	 * @author efmcuiti
@@ -47,7 +54,7 @@ public class SelfieViewAdapter extends CursorAdapter {
 		/** Holds a thumb to be displayed on the list view. */
 		ImageView thumbnail;
 		/** Text to show at the side of the thumb. */
-		String selfieName;
+		TextView selfieName;
 	}
 	
 	/**
@@ -61,8 +68,6 @@ public class SelfieViewAdapter extends CursorAdapter {
 		// Initialize the local variables.
 		this.mContext = context;
 		sLayoutInflater = LayoutInflater.from(mContext);
-		
-		// TODO add the new logic for media validation.
 	}
 
 	/* (non-Javadoc)
@@ -70,8 +75,18 @@ public class SelfieViewAdapter extends CursorAdapter {
 	 */
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		return null;
+		// 1. Build a new data container.
+		ViewHolder holder = new ViewHolder();
+		View newRow = sLayoutInflater.inflate(R.layout.new_selfie_row, parent, false);
+		
+		// 2. Building empty components to the view holder.
+		holder.thumbnail = (ImageView) newRow.findViewById(R.id.thumbnail);
+		holder.selfieName = (TextView) newRow.findViewById(R.id.selfieName);
+		
+		// 3. Adding it to the container.
+		newRow.setTag(holder);
+		
+		return newRow;
 	}
 
 	/* (non-Javadoc)
@@ -79,8 +94,32 @@ public class SelfieViewAdapter extends CursorAdapter {
 	 */
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		// TODO Auto-generated method stub
+		// 1. Getting the object where the new row must be configured.
+		ViewHolder holder = (ViewHolder) view.getTag();
+		
+		// 2. All the elements for the new row comes from the current 
+		// cursor position.
+		holder.thumbnail.setImageBitmap(
+				getThumbnailBitmap(cursor.getString(cursor.getColumnIndex(DailySelfieContract.SELFIE_BITMAP_PATH))));
+		holder.selfieName.setText(cursor.getString(cursor.getColumnIndex(DailySelfieContract.SELFIE_NAME)));
 
+	}
+	
+	/**
+	 * Given a path to a full sized picture, this method 
+	 * returns a Bitmap scaled to match the default thumb
+	 * bounds.
+	 * @param imagePath Where to find the whole-sized picture.
+	 * @return The scaled decoded image.
+	 */
+	private Bitmap getThumbnailBitmap(String imagePath) {
+		// 1. The options shall be configured so a thumbnail is 
+		// returned instead of the whole image.
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.outHeight = THUMB_HEIGHT;
+		options.outWidth = THUMB_WIDTH;
+		
+		return BitmapFactory.decodeFile(imagePath, options);
 	}
 
 	/* (non-Javadoc)
@@ -92,7 +131,10 @@ public class SelfieViewAdapter extends CursorAdapter {
 		if (null != newCursor) {
 			mSelfies.clear();
 			if (newCursor.moveToFirst()) {
-				// TODO add the new elements to the view.
+				do {
+					mSelfies.add(getSelfieRecordFromCursor(newCursor));
+				} while(newCursor.moveToNext());
+				notifyDataSetChanged();
 			}
 		}
 		return super.swapCursor(newCursor);
@@ -103,6 +145,43 @@ public class SelfieViewAdapter extends CursorAdapter {
 	 * @param selfie New element to be added to the list.
 	 */
 	public void add(SelfieRecord selfie) {
-		// TODO add the add new logic.
+		if (null == selfie) {
+			return;
+		}
+		
+		// 1. Building and adding the new selfie to the content 
+		// provider.
+		mSelfies.add(selfie);
+		ContentValues values = new ContentValues();
+		
+		// 1.1. Building the values map to be added to the content provider.
+		values.put(DailySelfieContract.SELFIE_BITMAP_PATH, selfie.getSelfieBitmapPath());
+		values.put(DailySelfieContract.SELFIE_NAME, selfie.getSelfieName());
+		
+		// 1.2. Adding the new photo to the content provider.
+		ContentResolver resolver = mContext.getContentResolver();
+		resolver.insert(DailySelfieContract.CONTENT_URI, values);
+	}
+	
+	/**
+	 * Given a cursor pointed to an actual record, this method 
+	 * builds a new DTO so it can be used later on inside de application.
+	 * @param c Cursor pointing to the current record.
+	 * @return The DTO built based on cursor current values.
+	 */
+	private SelfieRecord getSelfieRecordFromCursor(Cursor c) {
+		SelfieRecord selfie = new SelfieRecord();
+		
+		// 1. Building each record field.
+		selfie.setSelfieBitmapPath(
+				c.getString(
+						c.getColumnIndex(
+								DailySelfieContract.SELFIE_BITMAP_PATH)));
+		selfie.setSelfieName(
+				c.getString(
+						c.getColumnIndex(
+								DailySelfieContract.SELFIE_NAME)));
+		
+		return selfie;
 	}
 }

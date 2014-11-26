@@ -12,15 +12,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.tjdo.dailyselfie.provider.DailySelfieContract;
+
 import android.app.ListActivity;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 /**
@@ -29,7 +36,7 @@ import android.view.MenuItem;
  * @author efmcuiti [efmcuiti@gmail.com]
  *
  */
-public class DailySelfieActivity extends ListActivity {
+public class DailySelfieActivity extends ListActivity implements LoaderCallbacks<Cursor> {
 	
 	/** Defines the parameter to be passed to the camera application. */
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -39,6 +46,12 @@ public class DailySelfieActivity extends ListActivity {
 	
 	/** Used to temporal storage of the new selfie. */
 	private String mCurrentImagePath;
+	
+	/** Used to temporal storage of the new selfie's name. */
+	private String mCurrentImageName;
+	
+	/** Who will manage the list view so far. */
+	private SelfieViewAdapter mAdapter;
 
     /* (non-Javadoc)
      * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -46,8 +59,24 @@ public class DailySelfieActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 0. No external storage means that this application won't work.
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+        	Toast.makeText(
+        			getApplicationContext(), 
+        			"External storage not available.", 
+        			Toast.LENGTH_LONG).show();
+        	finish();
+        }
+        
         // 1. Setting the customized layout list view.
         setContentView(R.layout.activity_daily_selfie);
+        
+        // 2. Adding the adapter for the visual rows.
+        mAdapter = new SelfieViewAdapter(getApplicationContext(), null, 0);
+        setListAdapter(mAdapter);
+        
+        // 3. Starting the cursor loader.
+        getLoaderManager().initLoader(0, null, this);
     }
 
 
@@ -90,7 +119,8 @@ public class DailySelfieActivity extends ListActivity {
 			try {
 				imgFile = createImageFile();
 				// Updating the current image path.
-				mCurrentImagePath = "file:" + imgFile.getAbsolutePath();
+				mCurrentImagePath = imgFile.getAbsolutePath();
+				mCurrentImageName = imgFile.getName();
 			} catch (IOException e) {
 				// Error saving image files.
 				Log.e(TAG, String.format("Couldn't create temporal image file!"), e);
@@ -131,13 +161,44 @@ public class DailySelfieActivity extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Getting the taken image.
 		if ((requestCode == REQUEST_IMAGE_CAPTURE) && (resultCode == RESULT_OK)) {
-			if (data == null) {
-				Log.e(TAG, "Fatal error, data is null.");
-				return;
-			}
-			Bundle extras = data.getExtras();
-			Bitmap thumbnail = (Bitmap) extras.get("data");
-			Log.i(TAG, String.format("Selfie taken! %s", thumbnail.getByteCount()));
+			Log.i(TAG, String.format("Selfie taken! %s", mCurrentImagePath));
+			SelfieRecord sr = new SelfieRecord(mCurrentImagePath, null, mCurrentImageName);
+			// Adding the new element to the view.
+			mAdapter.add(sr);
 		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see android.app.LoaderManager.LoaderCallbacks#onCreateLoader(int, android.os.Bundle)
+	 */
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		// 1. Setting up the new cursor loader.
+		String columns[] = new String[] {
+				DailySelfieContract._ID,
+				DailySelfieContract.SELFIE_BITMAP_PATH, 
+				DailySelfieContract.SELFIE_NAME
+		};
+		return new CursorLoader(getApplicationContext(), 
+				DailySelfieContract.CONTENT_URI, columns, null, null, null);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see android.app.LoaderManager.LoaderCallbacks#onLoadFinished(android.content.Loader, java.lang.Object)
+	 */
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+		mAdapter.swapCursor(data);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see android.app.LoaderManager.LoaderCallbacks#onLoaderReset(android.content.Loader)
+	 */
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		mAdapter.swapCursor(null);
 	}
 }

@@ -16,13 +16,13 @@ import android.graphics.Bitmap;
 public class SelfieRecord {
 
 	/** Where to find the real photo taken. */
-	private String mSelfieBitmapPath;
+	private String selfieBitmapPath;
 	
 	/** The actual byte-data content. */
-	private Bitmap mSelfieBitmap;
+	private Bitmap selfieBitmap;
 	
 	/** Name for the actual photo. */
-	private String mSelfieName;
+	private String selfieName;
 	
 	/**
 	 * Full powered constructor for the class.
@@ -31,9 +31,9 @@ public class SelfieRecord {
 	 * @param selfieName Name of the photo.
 	 */
 	public SelfieRecord(String selfieBitmapPath, Bitmap selfieBitmap, String selfieName) {
-		this.mSelfieBitmapPath = selfieBitmapPath;
-		this.mSelfieBitmap = selfieBitmap;
-		this.mSelfieName = selfieName;
+		this.selfieBitmapPath = selfieBitmapPath;
+		this.selfieBitmap = selfieBitmap;
+		this.selfieName = selfieName;
 	}
 	
 	/**
@@ -45,42 +45,42 @@ public class SelfieRecord {
 	/**
 	 * @return the mSelfieBitmapPath
 	 */
-	public String getmSelfieBitmapPath() {
-		return mSelfieBitmapPath;
+	public String getSelfieBitmapPath() {
+		return selfieBitmapPath;
 	}
 
 	/**
 	 * @param mSelfieBitmapPath the mSelfieBitmapPath to set
 	 */
-	public void setmSelfieBitmapPath(String mSelfieBitmapPath) {
-		this.mSelfieBitmapPath = mSelfieBitmapPath;
+	public void setSelfieBitmapPath(String mSelfieBitmapPath) {
+		this.selfieBitmapPath = mSelfieBitmapPath;
 	}
 
 	/**
 	 * @return the mSelfieBitmap
 	 */
-	public Bitmap getmSelfieBitmap() {
-		return mSelfieBitmap;
+	public Bitmap getSelfieBitmap() {
+		return selfieBitmap;
 	}
 
 	/**
 	 * @param mSelfieBitmap the mSelfieBitmap to set
 	 */
-	public void setmSelfieBitmap(Bitmap mSelfieBitmap) {
-		this.mSelfieBitmap = mSelfieBitmap;
+	public void setSelfieBitmap(Bitmap mSelfieBitmap) {
+		this.selfieBitmap = mSelfieBitmap;
 	}
 
 	/**
 	 * @return the mSelfieName
 	 */
-	public String getmSelfieName() {
-		return mSelfieName;
+	public String getSelfieName() {
+		return selfieName;
 	}
 
 	/**
 	 * @param mSelfieName the mSelfieName to set
 	 */
-	public void setmSelfieName(String mSelfieName) {
-		this.mSelfieName = mSelfieName;
+	public void setSelfieName(String mSelfieName) {
+		this.selfieName = mSelfieName;
 	}
 }
